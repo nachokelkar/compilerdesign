@@ -5,7 +5,7 @@ int yyerror();
 int yylex();
 %}
 
-%token RETURN SEMICOLON NUM VAR TRUE FALSE IF FOR IN OF ELSE STRING IDENTIFIER
+%token RETURN SEMICOLON NUM VAR TRUE FALSE IF FOR IN OF ELSE STRING IDENTIFIER UNARYPLUS UNARYMINUS
 
 %%
 
@@ -57,12 +57,12 @@ MultDiv: MultDiv '*' ExponentialExpression {printf("MultDiv -> Exponential\n");}
 ExponentialExpression: UnaryPostExpression '^' ExponentialExpression {printf("Exponential -> UnaryPost ^ Exponential\n");} |
 	UnaryPostExpression {printf("Exponential -> UnaryPost\n");} ;
 
-UnaryPostExpression: UnaryPreExpression '+''+' {printf("UnaryPost -> UnaryPre ++\n");} |
-	UnaryPreExpression '-''-' {printf("UnaryPost -> UnaryPre --\n");} |
+UnaryPostExpression: UnaryPreExpression UNARYPLUS {printf("UnaryPost -> UnaryPre ++\n");} |
+	UnaryPreExpression UNARYMINUS {printf("UnaryPost -> UnaryPre --\n");} |
 	UnaryPreExpression {printf("UnaryPost -> Unary\n");};
 
-UnaryPreExpression: '+''+' ExpressionBase {printf("UnaryPre -> ++ ExpBase\n");} |
-	'-''-' ExpressionBase {printf("UnaryPre -> -- ExpBase\n");} |
+UnaryPreExpression: UNARYPLUS ExpressionBase {printf("UnaryPre -> ++ ExpBase\n");} |
+	UNARYMINUS ExpressionBase {printf("UnaryPre -> -- ExpBase\n");} |
 	ExpressionBase {printf("UnaryPre -> ExpBase\n");} ;
 
 ExpressionBase:'(' Expression ')' {printf("ExpBase -> ( Expression )\n");} |

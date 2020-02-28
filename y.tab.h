@@ -57,7 +57,9 @@ extern int yydebug;
     OF = 267,
     ELSE = 268,
     STRING = 269,
-    IDENTIFIER = 270
+    IDENTIFIER = 270,
+    UNARYPLUS = 271,
+    UNARYMINUS = 272
   };
 #endif
 /* Tokens.  */
@@ -74,6 +76,8 @@ extern int yydebug;
 #define ELSE 268
 #define STRING 269
 #define IDENTIFIER 270
+#define UNARYPLUS 271
+#define UNARYMINUS 272
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

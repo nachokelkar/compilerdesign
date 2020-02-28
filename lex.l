@@ -7,6 +7,7 @@
 %}
 
 %%
+(\n) {printf("%d\n", a++);}
 for {return FOR;}
 true {return TRUE;}
 false {return FALSE;}
@@ -20,11 +21,13 @@ var {return VAR;}
 [0-9]+ {return NUM;}
 ; {return SEMICOLON;}
 \".*\" {return STRING;}
+"++" {return UNARYPLUS;}
+"--" {return UNARYMINUS;}
 [\t|' '] ;
-(\n) {printf("%d\n", a++);}
 "//".* {;}
 "/"\*[\n|.]*\*"/" {;}
-.	{return yytext[0];}
+\+	{return yytext[0];}
+. {return yytext[0];}
 %%
 
 int yywrap()
