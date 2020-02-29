@@ -1,8 +1,36 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
-int yyerror();
-int yylex();
+	#include <stdlib.h>
+	#include <string.h>
+	#include <stdio.h>
+	FILE *yyin;
+	int yyerror();
+	int yylex();
+	char* type;
+	int err = 0;
+	FILE* fp;
+	typedef struct NODE
+	{
+	char name[10];
+	int value;
+	char type[10];
+	int scope;
+	struct NODE* next;
+	}NODE;
+
+	typedef struct symbol_table
+	{
+		NODE* head;
+		int entries;
+	}TABLE;
+	TABLE* s;
+	int scope = 0;
+
+	void print();
+	int exists(char* name);
+	void scopered(int scope);
+	void update(char* name, int val);
+	void insert(char* name, int value, char* type) ;
+	extern int yylineno;
 %}
 
 %token RETURN SEMICOLON NUM VAR TRUE FALSE IF FOR IN OF ELSE STRING IDENTIFIER UNARYPLUS UNARYMINUS
@@ -24,7 +52,7 @@ Declaration: VAR Variables {printf("Declaration -> var variables\n");};
 Variables: Variables ',' Variable {printf("Variables -> Comma\n");} |
 	Variable {printf("Variables -> Variable\n");} ;
 
-Variable: IDENTIFIER {printf("Variable -> Identifier\n");} |
+Variable: IDENTIFIER {printf("Variable -> Identifier\n"); insert($1, 0)} |
 	AssignmentExpression {printf("Variable -> AssignmentExp\n");} ;
 
 Condition: '!' OrExpression {printf("Condition -> !OrExp\n");} |
@@ -100,10 +128,91 @@ int yyerror()
 int main()
 {
 	printf("Enter\n");
-  if(!yyparse())
-  {
-      printf("\nValid!\n");
-  }
-  return 0;
+	s = (TABLE *)malloc(sizeof(TABLE));
+	s->head=NULL;
+	s->entries=0;
+	fp = fopen("symbol_table.txt","w");
+	yyin = fopen(argv[1], "r");
+	if(!yyparse())
+	{
+		print();
+		printf("\nValid!\n");
+	}
+	return 0;
+}
 
+
+void insert(char* name, int value, char* type)
+{
+	if(exists(name))
+	{
+		printf("Variable %s already declared\n",name);
+		err++;
+		return;
+	}
+    	NODE* test = (NODE*) malloc(sizeof(NODE));
+    	strcpy(test->name,name);
+	test->value=value;
+	test->next=NULL ;
+	test->scope=scope;
+	strcpy(test->type, type);
+
+	NODE* h = s->head;
+
+	if(h==NULL)
+	{
+
+		s->head=test;
+		s->entries+=1;
+		return;
+	}
+	while(h->next!=NULL)
+	{
+		h=h->next;
+	}
+	h->next=test;
+	s->entries+=1;
+}
+
+int exists(char* name)
+{
+	NODE* temp = s->head;
+	if(s->head == NULL)
+		return 0;
+	while(temp != NULL)
+	{
+		if(strcmp(temp->name,name) == 0 && temp->scope <= scope)
+			return 1;
+		temp = temp->next;
+	}
+	return 0;
+}
+
+void update(char* name, int val)
+{
+	NODE* temp = s->head;
+	while(temp->next != NULL)
+	{
+		printf("%s %d %d\n",temp->name,temp->value,temp->scope);
+		if(strcmp(temp->name,name) == 0){
+		printf("%d\n",temp->value);
+			temp->value = val;
+			temp->scope=scope;
+			return;
+		}
+		temp = temp->next;
+	}
+	
+}
+
+void print()
+{
+	NODE* h = s->head;
+	fp = fopen("symbol_table.txt","w");
+	fprintf(fp,"\nSymbol table \nName  Value  Type  Scope\n");
+	for(int i=0;i<s->entries; i++ )
+	{
+		fprintf(fp,"%s     %d      %s   %d\n", h->name, h->value, h->type, h->scope);
+		h=h->next;
+	}
 }

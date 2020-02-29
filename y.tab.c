@@ -64,12 +64,40 @@
 /* Copy the first part of user declarations.  */
 #line 1 "yacc.y" /* yacc.c:339  */
 
-#include <stdio.h>
-#include <stdlib.h>
-int yyerror();
-int yylex();
+	#include <stdlib.h>
+	#include <string.h>
+	#include <stdio.h>
+	FILE *yyin;
+	int yyerror();
+	int yylex();
+	char* type;
+	int err = 0;
+	FILE* fp;
+	typedef struct NODE
+	{
+	char name[10];
+	int value;
+	char type[10];
+	int scope;
+	struct NODE* next;
+	}NODE;
 
-#line 73 "y.tab.c" /* yacc.c:339  */
+	typedef struct symbol_table
+	{
+		NODE* head;
+		int entries;
+	}TABLE;
+	TABLE* s;
+	int scope = 0;
+
+	void print();
+	int exists(char* name);
+	void scopered(int scope);
+	void update(char* name, int val);
+	void insert(char* name, int value, char* type) ;
+	extern int yylineno;
+
+#line 101 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -87,10 +115,7 @@ int yylex();
 # define YYERROR_VERBOSE 0
 #endif
 
-/* In a future release of Bison, this section will be replaced
-   by #include "y.tab.h".  */
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -150,11 +175,11 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+
 
 /* Copy the second part of user declarations.  */
 
-#line 158 "y.tab.c" /* yacc.c:358  */
+#line 183 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -453,13 +478,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    12,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    20,    22,    24,    25,    27,    28,    30,    31,    33,
-      34,    36,    37,    39,    40,    41,    42,    44,    45,    47,
-      47,    47,    47,    47,    47,    49,    50,    51,    53,    54,
-      55,    57,    58,    60,    61,    62,    64,    65,    66,    68,
-      69,    70,    72,    72,    74,    76,    76,    78,    80,    82,
-      82,    82,    84,    86,    86,    88,    88,    88
+       0,    40,    40,    41,    42,    43,    44,    45,    46,    47,
+      48,    48,    50,    52,    53,    55,    56,    58,    59,    61,
+      62,    64,    65,    67,    68,    69,    70,    72,    73,    75,
+      75,    75,    75,    75,    75,    77,    78,    79,    81,    82,
+      83,    85,    86,    88,    89,    90,    92,    93,    94,    96,
+      97,    98,   100,   100,   102,   104,   104,   106,   108,   110,
+     110,   110,   112,   114,   114,   116,   116,   116
 };
 #endif
 
@@ -1320,289 +1345,289 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 12 "yacc.y" /* yacc.c:1646  */
+#line 40 "yacc.y" /* yacc.c:1646  */
     {printf("Program -> Statement\n"); YYACCEPT;}
-#line 1326 "y.tab.c" /* yacc.c:1646  */
+#line 1351 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 13 "yacc.y" /* yacc.c:1646  */
+#line 41 "yacc.y" /* yacc.c:1646  */
     {printf("Statement -> if else\n");}
-#line 1332 "y.tab.c" /* yacc.c:1646  */
+#line 1357 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 14 "yacc.y" /* yacc.c:1646  */
+#line 42 "yacc.y" /* yacc.c:1646  */
     {printf("Statement -> if\n");}
-#line 1338 "y.tab.c" /* yacc.c:1646  */
+#line 1363 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 15 "yacc.y" /* yacc.c:1646  */
+#line 43 "yacc.y" /* yacc.c:1646  */
     {printf("Statement -> for\n");}
-#line 1344 "y.tab.c" /* yacc.c:1646  */
+#line 1369 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 16 "yacc.y" /* yacc.c:1646  */
+#line 44 "yacc.y" /* yacc.c:1646  */
     {printf("Statement -> for in\n");}
-#line 1350 "y.tab.c" /* yacc.c:1646  */
+#line 1375 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 17 "yacc.y" /* yacc.c:1646  */
+#line 45 "yacc.y" /* yacc.c:1646  */
     {printf("Statement -> for of\n");}
-#line 1356 "y.tab.c" /* yacc.c:1646  */
+#line 1381 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 18 "yacc.y" /* yacc.c:1646  */
+#line 46 "yacc.y" /* yacc.c:1646  */
     {printf("Statement -> return\n");}
-#line 1362 "y.tab.c" /* yacc.c:1646  */
+#line 1387 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 19 "yacc.y" /* yacc.c:1646  */
+#line 47 "yacc.y" /* yacc.c:1646  */
     {printf("Statement -> Declaration\n");}
-#line 1368 "y.tab.c" /* yacc.c:1646  */
+#line 1393 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 20 "yacc.y" /* yacc.c:1646  */
+#line 48 "yacc.y" /* yacc.c:1646  */
     {printf("Statement -> Assignment\n");}
-#line 1374 "y.tab.c" /* yacc.c:1646  */
+#line 1399 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 22 "yacc.y" /* yacc.c:1646  */
+#line 50 "yacc.y" /* yacc.c:1646  */
     {printf("Declaration -> var variables\n");}
-#line 1380 "y.tab.c" /* yacc.c:1646  */
+#line 1405 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 24 "yacc.y" /* yacc.c:1646  */
+#line 52 "yacc.y" /* yacc.c:1646  */
     {printf("Variables -> Comma\n");}
-#line 1386 "y.tab.c" /* yacc.c:1646  */
+#line 1411 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 25 "yacc.y" /* yacc.c:1646  */
+#line 53 "yacc.y" /* yacc.c:1646  */
     {printf("Variables -> Variable\n");}
-#line 1392 "y.tab.c" /* yacc.c:1646  */
+#line 1417 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 27 "yacc.y" /* yacc.c:1646  */
+#line 55 "yacc.y" /* yacc.c:1646  */
     {printf("Variable -> Identifier\n");}
-#line 1398 "y.tab.c" /* yacc.c:1646  */
+#line 1423 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 28 "yacc.y" /* yacc.c:1646  */
+#line 56 "yacc.y" /* yacc.c:1646  */
     {printf("Variable -> AssignmentExp\n");}
-#line 1404 "y.tab.c" /* yacc.c:1646  */
+#line 1429 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 30 "yacc.y" /* yacc.c:1646  */
+#line 58 "yacc.y" /* yacc.c:1646  */
     {printf("Condition -> !OrExp\n");}
-#line 1410 "y.tab.c" /* yacc.c:1646  */
+#line 1435 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 31 "yacc.y" /* yacc.c:1646  */
+#line 59 "yacc.y" /* yacc.c:1646  */
     {printf("Condition -> OrExp\n");}
-#line 1416 "y.tab.c" /* yacc.c:1646  */
+#line 1441 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 33 "yacc.y" /* yacc.c:1646  */
+#line 61 "yacc.y" /* yacc.c:1646  */
     {printf("OrExp -> Or || And\n");}
-#line 1422 "y.tab.c" /* yacc.c:1646  */
+#line 1447 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 34 "yacc.y" /* yacc.c:1646  */
+#line 62 "yacc.y" /* yacc.c:1646  */
     {printf("OrExp -> AndExp\n");}
-#line 1428 "y.tab.c" /* yacc.c:1646  */
+#line 1453 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 36 "yacc.y" /* yacc.c:1646  */
+#line 64 "yacc.y" /* yacc.c:1646  */
     {printf("AndExp -> AndExp && ConditionalBase\n");}
-#line 1434 "y.tab.c" /* yacc.c:1646  */
+#line 1459 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 37 "yacc.y" /* yacc.c:1646  */
+#line 65 "yacc.y" /* yacc.c:1646  */
     {printf("AndExp -> ConditionalBase\n");}
-#line 1440 "y.tab.c" /* yacc.c:1646  */
+#line 1465 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 39 "yacc.y" /* yacc.c:1646  */
+#line 67 "yacc.y" /* yacc.c:1646  */
     {printf("ConditionalBase -> ( Condition) )\n");}
-#line 1446 "y.tab.c" /* yacc.c:1646  */
+#line 1471 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 40 "yacc.y" /* yacc.c:1646  */
+#line 68 "yacc.y" /* yacc.c:1646  */
     {printf("ConditionalBase -> RelationalExpression\n");}
-#line 1452 "y.tab.c" /* yacc.c:1646  */
+#line 1477 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 41 "yacc.y" /* yacc.c:1646  */
+#line 69 "yacc.y" /* yacc.c:1646  */
     {printf("ConditionalBase -> TRUE\n");}
-#line 1458 "y.tab.c" /* yacc.c:1646  */
+#line 1483 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 42 "yacc.y" /* yacc.c:1646  */
+#line 70 "yacc.y" /* yacc.c:1646  */
     {printf("ConditionalBase -> FALSE\n");}
-#line 1464 "y.tab.c" /* yacc.c:1646  */
+#line 1489 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 44 "yacc.y" /* yacc.c:1646  */
+#line 72 "yacc.y" /* yacc.c:1646  */
     {printf("RelExp -> RelExp RelOp Exp\n");}
-#line 1470 "y.tab.c" /* yacc.c:1646  */
+#line 1495 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 45 "yacc.y" /* yacc.c:1646  */
+#line 73 "yacc.y" /* yacc.c:1646  */
     {printf("RelationalExpression -> Expression\n");}
-#line 1476 "y.tab.c" /* yacc.c:1646  */
+#line 1501 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 49 "yacc.y" /* yacc.c:1646  */
+#line 77 "yacc.y" /* yacc.c:1646  */
     {printf("Exp -> Exp + MultDiv\n");}
-#line 1482 "y.tab.c" /* yacc.c:1646  */
+#line 1507 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 50 "yacc.y" /* yacc.c:1646  */
+#line 78 "yacc.y" /* yacc.c:1646  */
     {printf("Exp -> Exp - MultDiv\n");}
-#line 1488 "y.tab.c" /* yacc.c:1646  */
+#line 1513 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 51 "yacc.y" /* yacc.c:1646  */
+#line 79 "yacc.y" /* yacc.c:1646  */
     {printf("Exp -> MultDiv\n");}
-#line 1494 "y.tab.c" /* yacc.c:1646  */
+#line 1519 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 53 "yacc.y" /* yacc.c:1646  */
+#line 81 "yacc.y" /* yacc.c:1646  */
     {printf("MultDiv -> Exponential\n");}
-#line 1500 "y.tab.c" /* yacc.c:1646  */
+#line 1525 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 54 "yacc.y" /* yacc.c:1646  */
+#line 82 "yacc.y" /* yacc.c:1646  */
     {printf("MultDiv -> MultDiv / Exponential\n");}
-#line 1506 "y.tab.c" /* yacc.c:1646  */
+#line 1531 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 55 "yacc.y" /* yacc.c:1646  */
+#line 83 "yacc.y" /* yacc.c:1646  */
     {printf("MultDiv -> Exponential\n");}
-#line 1512 "y.tab.c" /* yacc.c:1646  */
+#line 1537 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 57 "yacc.y" /* yacc.c:1646  */
+#line 85 "yacc.y" /* yacc.c:1646  */
     {printf("Exponential -> UnaryPost ^ Exponential\n");}
-#line 1518 "y.tab.c" /* yacc.c:1646  */
+#line 1543 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 58 "yacc.y" /* yacc.c:1646  */
+#line 86 "yacc.y" /* yacc.c:1646  */
     {printf("Exponential -> UnaryPost\n");}
-#line 1524 "y.tab.c" /* yacc.c:1646  */
+#line 1549 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 60 "yacc.y" /* yacc.c:1646  */
+#line 88 "yacc.y" /* yacc.c:1646  */
     {printf("UnaryPost -> UnaryPre ++\n");}
-#line 1530 "y.tab.c" /* yacc.c:1646  */
+#line 1555 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 61 "yacc.y" /* yacc.c:1646  */
+#line 89 "yacc.y" /* yacc.c:1646  */
     {printf("UnaryPost -> UnaryPre --\n");}
-#line 1536 "y.tab.c" /* yacc.c:1646  */
+#line 1561 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 62 "yacc.y" /* yacc.c:1646  */
+#line 90 "yacc.y" /* yacc.c:1646  */
     {printf("UnaryPost -> Unary\n");}
-#line 1542 "y.tab.c" /* yacc.c:1646  */
+#line 1567 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 64 "yacc.y" /* yacc.c:1646  */
+#line 92 "yacc.y" /* yacc.c:1646  */
     {printf("UnaryPre -> ++ ExpBase\n");}
-#line 1548 "y.tab.c" /* yacc.c:1646  */
+#line 1573 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 65 "yacc.y" /* yacc.c:1646  */
+#line 93 "yacc.y" /* yacc.c:1646  */
     {printf("UnaryPre -> -- ExpBase\n");}
-#line 1554 "y.tab.c" /* yacc.c:1646  */
+#line 1579 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 66 "yacc.y" /* yacc.c:1646  */
+#line 94 "yacc.y" /* yacc.c:1646  */
     {printf("UnaryPre -> ExpBase\n");}
-#line 1560 "y.tab.c" /* yacc.c:1646  */
+#line 1585 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 68 "yacc.y" /* yacc.c:1646  */
+#line 96 "yacc.y" /* yacc.c:1646  */
     {printf("ExpBase -> ( Expression )\n");}
-#line 1566 "y.tab.c" /* yacc.c:1646  */
+#line 1591 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 69 "yacc.y" /* yacc.c:1646  */
+#line 97 "yacc.y" /* yacc.c:1646  */
     {printf("ExpBase -> IDENTIFIER\n");}
-#line 1572 "y.tab.c" /* yacc.c:1646  */
+#line 1597 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 70 "yacc.y" /* yacc.c:1646  */
+#line 98 "yacc.y" /* yacc.c:1646  */
     {printf("ExpBase -> NUM\n");}
-#line 1578 "y.tab.c" /* yacc.c:1646  */
+#line 1603 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 72 "yacc.y" /* yacc.c:1646  */
+#line 100 "yacc.y" /* yacc.c:1646  */
     {printf("Initialisation -> AssignmentExpression\n");}
-#line 1584 "y.tab.c" /* yacc.c:1646  */
+#line 1609 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 74 "yacc.y" /* yacc.c:1646  */
+#line 102 "yacc.y" /* yacc.c:1646  */
     {printf("AssignmentExp -> IDENTIFIER '=' AssignmentRHS\n");}
-#line 1590 "y.tab.c" /* yacc.c:1646  */
+#line 1615 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 76 "yacc.y" /* yacc.c:1646  */
+#line 104 "yacc.y" /* yacc.c:1646  */
     {printf("AssignmentRHS -> RelExp\n");}
-#line 1596 "y.tab.c" /* yacc.c:1646  */
+#line 1621 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 76 "yacc.y" /* yacc.c:1646  */
+#line 104 "yacc.y" /* yacc.c:1646  */
     {printf("AssignmentExp -> Array\n");}
-#line 1602 "y.tab.c" /* yacc.c:1646  */
+#line 1627 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1606 "y.tab.c" /* yacc.c:1646  */
+#line 1631 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1830,7 +1855,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 90 "yacc.y" /* yacc.c:1906  */
+#line 118 "yacc.y" /* yacc.c:1906  */
 
 
 
@@ -1844,10 +1869,91 @@ int yyerror()
 int main()
 {
 	printf("Enter\n");
-  if(!yyparse())
-  {
-      printf("\nValid!\n");
-  }
-  return 0;
+	s = (TABLE *)malloc(sizeof(TABLE));
+	s->head=NULL;
+	s->entries=0;
+	fp = fopen("symbol_table.txt","w");
+	yyin = fopen(argv[1], "r");
+	if(!yyparse())
+	{
+		print();
+		printf("\nValid!\n");
+	}
+	return 0;
+}
 
+
+void insert(char* name, int value, char* type)
+{
+	if(exists(name))
+	{
+		printf("Variable %s already declared\n",name);
+		err++;
+		return;
+	}
+    	NODE* test = (NODE*) malloc(sizeof(NODE));
+    	strcpy(test->name,name);
+	test->value=value;
+	test->next=NULL ;
+	test->scope=scope;
+	strcpy(test->type, type);
+
+	NODE* h = s->head;
+
+	if(h==NULL)
+	{
+
+		s->head=test;
+		s->entries+=1;
+		return;
+	}
+	while(h->next!=NULL)
+	{
+		h=h->next;
+	}
+	h->next=test;
+	s->entries+=1;
+}
+
+int exists(char* name)
+{
+	NODE* temp = s->head;
+	if(s->head == NULL)
+		return 0;
+	while(temp != NULL)
+	{
+		if(strcmp(temp->name,name) == 0 && temp->scope <= scope)
+			return 1;
+		temp = temp->next;
+	}
+	return 0;
+}
+
+void update(char* name, int val)
+{
+	NODE* temp = s->head;
+	while(temp->next != NULL)
+	{
+		printf("%s %d %d\n",temp->name,temp->value,temp->scope);
+		if(strcmp(temp->name,name) == 0){
+		printf("%d\n",temp->value);
+			temp->value = val;
+			temp->scope=scope;
+			return;
+		}
+		temp = temp->next;
+	}
+	
+}
+
+void print()
+{
+	NODE* h = s->head;
+	fp = fopen("symbol_table.txt","w");
+	fprintf(fp,"\nSymbol table \nName  Value  Type  Scope\n");
+	for(int i=0;i<s->entries; i++ )
+	{
+		fprintf(fp,"%s     %d      %s   %d\n", h->name, h->value, h->type, h->scope);
+		h=h->next;
+	}
 }
