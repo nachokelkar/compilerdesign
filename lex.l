@@ -4,7 +4,10 @@
     #include "y.tab.h"
     extern char* yylval;
     int yyerror();
-    extern void yyerror(char *);
+	int maxscope= 0;
+	int scopeid = 0;
+	int scopedepth = 0;
+    int yyerror();
     void addTokenToFile(char *t, char *s);
     int yylineno;
 %}
@@ -29,8 +32,8 @@ var                         {return VAR;}
 [\t|' ']                    {;}
 "//".*                      {;}
 "/"\*[\n|.]*\*"/"           {}
-"{"                         {scope+=1; return yytext[0];}
-"}"                         {scope-=1; return yytext[0];}
+"{"                         {scopeid=maxscope+1; scopedepth+=1; return yytext[0];}
+"}"                         {scopeid-=1; scopedepth-=1; maxscope+=1; return yytext[0];}
 \+                          {return yytext[0];}
 .                           {return yytext[0];}
 %%
@@ -38,7 +41,7 @@ var                         {return VAR;}
 void addTokenToFile(char *t, char *s)
 {
    	FILE *fptr;
-	fptr = fopen("tokens.txt", "a");
+	fptr = fopen("tokens.txt", "w");
    	if(fptr == NULL)
    	{
 	      printf("Error!");

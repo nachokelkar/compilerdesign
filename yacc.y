@@ -8,13 +8,14 @@
 	char* type;
 	int err = 0;
 	FILE* fp;
+	
 	typedef struct NODE
 	{
-	char name[10];
-	int value;
-	char type[10];
-	int scope;
-	struct NODE* next;
+		char name[20];
+		int line;
+		int scopeid;
+		int scopedepth;
+		struct NODE* next;
 	}NODE;
 
 	typedef struct symbol_table
@@ -22,14 +23,14 @@
 		NODE* head;
 		int entries;
 	}TABLE;
+	
 	TABLE* s;
-	int scope = 0;
+	extern int scopeid;
+	extern int scopedepth;
 
 	void print();
-	int exists(char* name);
-	void scopered(int scope);
-	void update(char* name, int val);
-	void insert(char* name, int value, char* type) ;
+	int exists(char* name, int pscopeid);
+	void insert(char* name, int line, int pscopeid, int pscopedepth) ;
 	extern int yylineno;
 %}
 
@@ -52,7 +53,7 @@ Declaration: VAR Variables {printf("Declaration -> var variables\n");};
 Variables: Variables ',' Variable {printf("Variables -> Comma\n");} |
 	Variable {printf("Variables -> Variable\n");} ;
 
-Variable: IDENTIFIER {printf("Variable -> Identifier\n"); insert($1, 0)} |
+Variable: IDENTIFIER {printf("Variable -> Identifier\n");  insert($1, yylineno, scopeid, scopedepth);} |
 	AssignmentExpression {printf("Variable -> AssignmentExp\n");} ;
 
 Condition: '!' OrExpression {printf("Condition -> !OrExp\n");} |
@@ -132,87 +133,77 @@ int main()
 	s->head=NULL;
 	s->entries=0;
 	fp = fopen("symbol_table.txt","w");
-	yyin = fopen(argv[1], "r");
 	if(!yyparse())
 	{
-		print();
 		printf("\nValid!\n");
+		print();
 	}
 	return 0;
 }
 
 
-void insert(char* name, int value, char* type)
+void insert(char* name, int line, int pscopeid, int pscopedepth)
 {
-	if(exists(name))
+	printf("Insert function\n");
+	if(exists(name, pscopeid))
 	{
-		printf("Variable %s already declared\n",name);
-		err++;
+		printf("Warning: Variable %s of scope ID %d already declared\n",name, pscopeid);
+		//err++;
 		return;
 	}
-    	NODE* test = (NODE*) malloc(sizeof(NODE));
-    	strcpy(test->name,name);
-	test->value=value;
-	test->next=NULL ;
-	test->scope=scope;
-	strcpy(test->type, type);
+	printf("Passed arg : %s %d %d %d\n", name, line, pscopeid, pscopedepth);
+    NODE* test = (NODE*) malloc(sizeof(NODE));
+    strcpy(test->name,name);
+	test->next = NULL;
+	test->scopeid = pscopeid;
+	test->scopedepth = pscopedepth;
+	test->line = line;
+	printf("Stored arg : %s %d %d %d\n", test->name, test->line, test->scopeid, test->scopedepth);
 
 	NODE* h = s->head;
 
 	if(h==NULL)
 	{
-
-		s->head=test;
-		s->entries+=1;
+		s->head = test;
+		s->entries += 1;
 		return;
 	}
-	while(h->next!=NULL)
+	while(h->next != NULL)
 	{
-		h=h->next;
+		h = h->next;
 	}
-	h->next=test;
-	s->entries+=1;
+	h->next = test;
+	s->entries += 1;
 }
 
-int exists(char* name)
+int exists(char* name, int pscopeid)
 {
+	printf("Exists function\n");
 	NODE* temp = s->head;
-	if(s->head == NULL)
+	printf("%p\n", s->head);
+	if(s->head == NULL){
+		printf("Table empty");
 		return 0;
+	}
 	while(temp != NULL)
 	{
-		if(strcmp(temp->name,name) == 0 && temp->scope <= scope)
+		if(strcmp(temp->name,name) == 0 && temp->scopeid == pscopeid){
+			printf("Found");
 			return 1;
-		temp = temp->next;
-	}
-	return 0;
-}
-
-void update(char* name, int val)
-{
-	NODE* temp = s->head;
-	while(temp->next != NULL)
-	{
-		printf("%s %d %d\n",temp->name,temp->value,temp->scope);
-		if(strcmp(temp->name,name) == 0){
-		printf("%d\n",temp->value);
-			temp->value = val;
-			temp->scope=scope;
-			return;
 		}
 		temp = temp->next;
 	}
-	
+	return 0;
 }
 
 void print()
 {
 	NODE* h = s->head;
 	fp = fopen("symbol_table.txt","w");
-	fprintf(fp,"\nSymbol table \nName  Value  Type  Scope\n");
+	fprintf(fp,"Symbol table:\nName\tLineno\tScope Depth\n");
 	for(int i=0;i<s->entries; i++ )
 	{
-		fprintf(fp,"%s     %d      %s   %d\n", h->name, h->value, h->type, h->scope);
+		fprintf(fp,"%s\t%d\t%d\n", h->name, h->line, h->scopedepth);
 		h=h->next;
 	}
 }
