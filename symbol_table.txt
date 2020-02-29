@@ -1,7 +1,0 @@
-Symbol table:
-Name		Lineno		Scope ID	Scope Depth
-a			1			0			0
-b			7			1			1
-c			12			2			1
-f			16			0			0
-c			19			0			0
