@@ -1,4 +1,5 @@
 %{
+	#define YYSTYPE char*
 	#include <stdlib.h>
 	#include <string.h>
 	#include <stdio.h>
@@ -24,13 +25,14 @@
 		int entries;
 	}TABLE;
 	
-	TABLE* s;
+	TABLE *s;
 	extern int scopeid;
 	extern int scopedepth;
 
-	void print();
-	int exists(char* name, int pscopeid);
-	void insert(char* name, int line, int pscopeid, int pscopedepth) ;
+	void print(TABLE* s);
+	void tableinit(TABLE *table);
+	int exists(TABLE* s, char* name, int pscopeid);
+	void insert(TABLE* s, char* name, int line, int pscopeid, int pscopedepth) ;
 	extern int yylineno;
 %}
 
@@ -38,71 +40,77 @@
 
 %%
 
-Program: Statement {printf("Program -> Statement\n"); YYACCEPT;};
-Statement: IF '(' Condition ')' '{' Statement '}' ELSE '{' Statement '}' Statement {printf("Statement -> if else\n");} |
-	IF '(' Condition ')' '{' Statement '}' Statement {printf("Statement -> if\n");} |
-	FOR '(' Initialisation SEMICOLON Condition SEMICOLON Expression ')' '{' Statement '}' Statement {printf("Statement -> for\n");} |
-	FOR '(' InExpression ')' '{' Statement '}' Statement {printf("Statement -> for in\n");} |
-	FOR '(' OfExpression ')' '{' Statement '}' Statement {printf("Statement -> for of\n");} |
-	RETURN Expression SEMICOLON Statement {printf("Statement -> return\n");} |
-	Declaration SEMICOLON Statement {printf("Statement -> Declaration\n");} |
-	AssignmentExpression SEMICOLON Statement {printf("Statement -> Assignment\n");} | ;
+Program: Statement {YYACCEPT;};
+Statement: IF '(' Condition ')' '{' Statement '}' ELSE '{' Statement '}' Statement |
+	IF '(' Condition ')' '{' Statement '}' Statement |
+	FOR '(' Initialisation SEMICOLON Condition SEMICOLON Expression ')' '{' Statement '}' Statement |
+	FOR '(' InExpression ')' '{' Statement '}' Statement |
+	FOR '(' OfExpression ')' '{' Statement '}' Statement |
+	RETURN Expression SEMICOLON Statement |
+	Declaration SEMICOLON Statement |
+	AssignmentExpression SEMICOLON Statement | 
+	UnaryExpression SEMICOLON Statement | ;
 
-Declaration: VAR Variables {printf("Declaration -> var variables\n");}; 
+UnaryExpression: IDENTIFIER UNARYMINUS |
+	IDENTIFIER UNARYPLUS |
+	UNARYMINUS IDENTIFIER |
+	UNARYPLUS IDENTIFIER ;
 
-Variables: Variables ',' Variable {printf("Variables -> Comma\n");} |
-	Variable {printf("Variables -> Variable\n");} ;
+Declaration: VAR Variables ; 
 
-Variable: IDENTIFIER {printf("Variable -> Identifier\n");  insert($1, yylineno, scopeid, scopedepth);} |
-	AssignmentExpression {printf("Variable -> AssignmentExp\n");} ;
+Variables: Variables ',' Variable |
+	Variable ;
 
-Condition: '!' OrExpression {printf("Condition -> !OrExp\n");} |
-	OrExpression {printf("Condition -> OrExp\n");} ;
+Variable: IDENTIFIER {insert(s, $1, yylineno, scopeid, scopedepth);} |
+	IDENTIFIER '=' AssignmentRHS {insert(s, $1, yylineno, scopeid, scopedepth);} ; 
 
-OrExpression: OrExpression '|''|' AndExpression {printf("OrExp -> Or || And\n");} |
-	AndExpression {printf("OrExp -> AndExp\n");} ;
+Condition: '!' OrExpression |
+	OrExpression ;
 
-AndExpression: AndExpression '&''&' ConditionalBase {printf("AndExp -> AndExp && ConditionalBase\n");} |
-	ConditionalBase {printf("AndExp -> ConditionalBase\n");} ;
+OrExpression: OrExpression '|''|' AndExpression |
+	AndExpression ;
 
-ConditionalBase: '(' Condition ')' {printf("ConditionalBase -> ( Condition) )\n");} |
-	RelationalExpression {printf("ConditionalBase -> RelationalExpression\n");} |
-	TRUE {printf("ConditionalBase -> TRUE\n");} |
-	FALSE {printf("ConditionalBase -> FALSE\n");} ;
+AndExpression: AndExpression '&''&' ConditionalBase |
+	ConditionalBase ;
 
-RelationalExpression: RelationalExpression RelationalOperator Expression {printf("RelExp -> RelExp RelOp Exp\n");} |
-	Expression {printf("RelationalExpression -> Expression\n");} ;
+ConditionalBase: '(' Condition ')' |
+	RelationalExpression |
+	TRUE |
+	FALSE ;
+
+RelationalExpression: RelationalExpression RelationalOperator Expression |
+	Expression ;
 
 RelationalOperator: '<' | '>' | '<''=' | '>''=' | '=''=' | '!''=' ;
 
-Expression: Expression '+' MultDiv {printf("Exp -> Exp + MultDiv\n");} |
-	Expression '-' MultDiv {printf("Exp -> Exp - MultDiv\n");} |
-	MultDiv {printf("Exp -> MultDiv\n");} ;
+Expression: Expression '+' MultDiv |
+	Expression '-' MultDiv |
+	MultDiv ;
 
-MultDiv: MultDiv '*' ExponentialExpression {printf("MultDiv -> Exponential\n");} |
-	MultDiv '/' ExponentialExpression {printf("MultDiv -> MultDiv / Exponential\n");} |
-	ExponentialExpression {printf("MultDiv -> Exponential\n");};
+MultDiv: MultDiv '*' ExponentialExpression |
+	MultDiv '/' ExponentialExpression |
+	ExponentialExpression ;
 
-ExponentialExpression: UnaryPostExpression '^' ExponentialExpression {printf("Exponential -> UnaryPost ^ Exponential\n");} |
-	UnaryPostExpression {printf("Exponential -> UnaryPost\n");} ;
+ExponentialExpression: UnaryPostExpression '^' ExponentialExpression |
+	UnaryPostExpression ;
 
-UnaryPostExpression: UnaryPreExpression UNARYPLUS {printf("UnaryPost -> UnaryPre ++\n");} |
-	UnaryPreExpression UNARYMINUS {printf("UnaryPost -> UnaryPre --\n");} |
-	UnaryPreExpression {printf("UnaryPost -> Unary\n");};
+UnaryPostExpression: UnaryPreExpression UNARYPLUS |
+	UnaryPreExpression UNARYMINUS |
+	UnaryPreExpression ;
 
-UnaryPreExpression: UNARYPLUS ExpressionBase {printf("UnaryPre -> ++ ExpBase\n");} |
-	UNARYMINUS ExpressionBase {printf("UnaryPre -> -- ExpBase\n");} |
-	ExpressionBase {printf("UnaryPre -> ExpBase\n");} ;
+UnaryPreExpression: UNARYPLUS ExpressionBase |
+	UNARYMINUS ExpressionBase |
+	ExpressionBase ;
 
-ExpressionBase:'(' Expression ')' {printf("ExpBase -> ( Expression )\n");} |
-	IDENTIFIER {printf("ExpBase -> IDENTIFIER\n");} |
-	NUM {printf("ExpBase -> NUM\n");};
+ExpressionBase:'(' Expression ')' |
+	IDENTIFIER |
+	NUM ;
 
-Initialisation: AssignmentExpression {printf("Initialisation -> AssignmentExpression\n");} | ;
+Initialisation: AssignmentExpression | ;
 
-AssignmentExpression: IDENTIFIER '=' AssignmentRHS {printf("AssignmentExp -> IDENTIFIER '=' AssignmentRHS\n");};
+AssignmentExpression: IDENTIFIER '=' AssignmentRHS ;
 
-AssignmentRHS: RelationalExpression {printf("AssignmentRHS -> RelExp\n");} | Array {printf("AssignmentExp -> Array\n");} ;
+AssignmentRHS: RelationalExpression | Array ;
 
 InExpression: IDENTIFIER IN Iterable;
 
@@ -130,36 +138,36 @@ int main()
 {
 	printf("Enter\n");
 	s = (TABLE *)malloc(sizeof(TABLE));
-	s->head=NULL;
-	s->entries=0;
+	tableinit(s);
 	fp = fopen("symbol_table.txt","w");
 	if(!yyparse())
 	{
 		printf("\nValid!\n");
-		print();
+		print(s);
 	}
 	return 0;
 }
 
+void tableinit(TABLE *table){
+	table->head = NULL;
+	table->entries = 0;
+}
 
-void insert(char* name, int line, int pscopeid, int pscopedepth)
+void insert(TABLE* s, char* name, int line, int pscopeid, int pscopedepth)
 {
-	printf("Insert function\n");
-	if(exists(name, pscopeid))
+	if(exists(s, name, pscopeid))
 	{
-		printf("Warning: Variable %s of scope ID %d already declared\n",name, pscopeid);
+		printf("\n------------------\nWarning: Variable %s of scope ID %d already declared [Line: %d]\n------------------\n",name, pscopeid, line);
 		//err++;
 		return;
 	}
-	printf("Passed arg : %s %d %d %d\n", name, line, pscopeid, pscopedepth);
-    NODE* test = (NODE*) malloc(sizeof(NODE));
+	NODE* test = (NODE*) malloc(sizeof(NODE));
     strcpy(test->name,name);
 	test->next = NULL;
 	test->scopeid = pscopeid;
 	test->scopedepth = pscopedepth;
 	test->line = line;
-	printf("Stored arg : %s %d %d %d\n", test->name, test->line, test->scopeid, test->scopedepth);
-
+	
 	NODE* h = s->head;
 
 	if(h==NULL)
@@ -176,19 +184,15 @@ void insert(char* name, int line, int pscopeid, int pscopedepth)
 	s->entries += 1;
 }
 
-int exists(char* name, int pscopeid)
+int exists(TABLE* s, char* name, int pscopeid)
 {
-	printf("Exists function\n");
 	NODE* temp = s->head;
-	printf("%p\n", s->head);
-	if(s->head == NULL){
-		printf("Table empty");
+	if(s->head == NULL || s->head == 0x0){
 		return 0;
 	}
 	while(temp != NULL)
 	{
 		if(strcmp(temp->name,name) == 0 && temp->scopeid == pscopeid){
-			printf("Found");
 			return 1;
 		}
 		temp = temp->next;
@@ -196,14 +200,14 @@ int exists(char* name, int pscopeid)
 	return 0;
 }
 
-void print()
+void print(TABLE* s)
 {
 	NODE* h = s->head;
 	fp = fopen("symbol_table.txt","w");
-	fprintf(fp,"Symbol table:\nName\tLineno\tScope Depth\n");
+	fprintf(fp,"Symbol table:\nName\t\tLineno\t\tScope ID\tScope Depth\n");
 	for(int i=0;i<s->entries; i++ )
 	{
-		fprintf(fp,"%s\t%d\t%d\n", h->name, h->line, h->scopedepth);
+		fprintf(fp,"%s\t\t\t%d\t\t\t%d\t\t\t%d\n", h->name, h->line, h->scopeid, h->scopedepth);
 		h=h->next;
 	}
 }

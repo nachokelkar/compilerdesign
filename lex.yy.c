@@ -480,16 +480,17 @@ char *yytext;
     #define YYSTYPE char*
     #include <stdio.h>
     #include "y.tab.h"
-    extern char* yylval;
+    extern YYSTYPE yylval;
     int yyerror();
 	int maxscope= 0;
+	char *p;
 	int scopeid = 0;
 	int scopedepth = 0;
     int yyerror();
     void addTokenToFile(char *t, char *s);
     int yylineno;
-#line 492 "lex.yy.c"
 #line 493 "lex.yy.c"
+#line 494 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -706,9 +707,9 @@ YY_DECL
 		}
 
 	{
-#line 15 "lex.l"
+#line 16 "lex.l"
 
-#line 712 "lex.yy.c"
+#line 713 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -768,126 +769,126 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 16 "lex.l"
+#line 17 "lex.l"
 {yylineno++;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 17 "lex.l"
-{return FOR;}
+#line 18 "lex.l"
+{printf("FOR\n"); return FOR;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 18 "lex.l"
-{return TRUE;}
+#line 19 "lex.l"
+{printf("TRUE\n"); return TRUE;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 19 "lex.l"
-{return FALSE;}
+#line 20 "lex.l"
+{printf("FALSE\n"); return FALSE;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 20 "lex.l"
-{return IF;}
+#line 21 "lex.l"
+{printf("IF\n"); return IF;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 21 "lex.l"
-{return ELSE;}
+#line 22 "lex.l"
+{printf("ELSE\n"); return ELSE;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 22 "lex.l"
-{return RETURN;}
+#line 23 "lex.l"
+{printf("RETURN\n"); return RETURN;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 23 "lex.l"
-{return IN;}
+#line 24 "lex.l"
+{printf("IN\n"); return IN;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 24 "lex.l"
-{return OF;}
+#line 25 "lex.l"
+{printf("OF\n"); return OF;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 25 "lex.l"
-{return VAR;}
+#line 26 "lex.l"
+{printf("VAR\n"); return VAR;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 26 "lex.l"
-{yylval=strdup(yytext); addTokenToFile("Identifier", yytext); return IDENTIFIER;}
+#line 27 "lex.l"
+{printf("IDENTIFIER: %s\n", yytext); p=(char *)calloc(strlen(yytext)+1,sizeof(char)); strcpy(p, yytext); yylval=p; addTokenToFile("Identifier", yytext); return IDENTIFIER;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 27 "lex.l"
-{return NUM;}
+#line 28 "lex.l"
+{printf("NUMBER: %s\n", yytext); return NUM;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 28 "lex.l"
-{return SEMICOLON;}
+#line 29 "lex.l"
+{printf("SEMICOLON\n\n"); return SEMICOLON;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 29 "lex.l"
-{return STRING;}
+#line 30 "lex.l"
+{printf("STRING: %s\n", yytext); return STRING;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 30 "lex.l"
-{return UNARYPLUS;}
+#line 31 "lex.l"
+{printf("UNARYPLUS\n"); return UNARYPLUS;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 31 "lex.l"
-{return UNARYMINUS;}
+#line 32 "lex.l"
+{printf("UNARYMINUS\n"); return UNARYMINUS;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 32 "lex.l"
+#line 33 "lex.l"
 {;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 33 "lex.l"
+#line 34 "lex.l"
 {;}
 	YY_BREAK
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 34 "lex.l"
-{}
+#line 35 "lex.l"
+{;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 35 "lex.l"
-{scopeid=maxscope+1; scopedepth+=1; return yytext[0];}
+#line 36 "lex.l"
+{printf("{\n"); scopeid=maxscope+1; scopedepth+=1; return yytext[0];}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 36 "lex.l"
-{scopeid-=1; scopedepth-=1; maxscope+=1; return yytext[0];}
+#line 37 "lex.l"
+{printf("}\n"); scopedepth-=1; if(scopedepth == 0){scopeid = 0;} maxscope+=1; return yytext[0];}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 37 "lex.l"
-{return yytext[0];}
+#line 38 "lex.l"
+{printf("+\n"); return yytext[0];}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 38 "lex.l"
-{return yytext[0];}
+#line 39 "lex.l"
+{printf("%s\n", yytext); return yytext[0];}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 39 "lex.l"
+#line 40 "lex.l"
 ECHO;
 	YY_BREAK
-#line 891 "lex.yy.c"
+#line 892 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1892,7 +1893,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 39 "lex.l"
+#line 40 "lex.l"
 
 
 void addTokenToFile(char *t, char *s)
