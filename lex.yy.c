@@ -761,82 +761,82 @@ case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
 #line 10 "lex.l"
-{printf("%d\n", a++);}
+{a++;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 11 "lex.l"
-{return FOR;}
+{printf("TOKEN: FOR\n"); return FOR;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 12 "lex.l"
-{return TRUE;}
+{printf("TOKEN: TRUE\n"); return TRUE;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 13 "lex.l"
-{return FALSE;}
+{printf("TOKEN: FALSE\n"); return FALSE;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 14 "lex.l"
-{return IF;}
+{printf("TOKEN: IF\n"); return IF;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 15 "lex.l"
-{return ELSE;}
+{printf("TOKEN: ELSE\n"); return ELSE;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 16 "lex.l"
-{return RETURN;}
+{printf("TOKEN: RETURN\n"); return RETURN;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 17 "lex.l"
-{return IN;}
+{printf("TOKEN: IN\n"); return IN;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 18 "lex.l"
-{return OF;}
+{printf("TOKEN: OF\n"); return OF;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 19 "lex.l"
-{return VAR;}
+{printf("TOKEN: VAR\n"); return VAR;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 20 "lex.l"
-{return IDENTIFIER;}
+{printf("TOKEN: IDENTIFIER %s\n", yytext); return IDENTIFIER;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 21 "lex.l"
-{return NUM;}
+{printf("TOKEN: NUM %s\n", yytext); return NUM;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 22 "lex.l"
-{return SEMICOLON;}
+{printf("TOKEN: SEMICOLON\n"); return SEMICOLON;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 23 "lex.l"
-{return STRING;}
+{printf("TOKEN: STRING %s\n", yytext); return STRING;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 24 "lex.l"
-{return UNARYPLUS;}
+{printf("TOKEN: UNARYPLUS\n"); return UNARYPLUS;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 25 "lex.l"
-{return UNARYMINUS;}
+{printf("TOKEN: UNARYMINUS\n"); return UNARYMINUS;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
@@ -846,23 +846,23 @@ YY_RULE_SETUP
 case 18:
 YY_RULE_SETUP
 #line 27 "lex.l"
-{;}
+{printf("SINGLE LINE COMMENT: %s\n", yytext);}
 	YY_BREAK
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
 #line 28 "lex.l"
-{;}
+{printf("MULTI LINE COMMENT: %s\n", yytext);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 29 "lex.l"
-{return yytext[0];}
+{printf("TOKEN: %s\n", yytext); return yytext[0];}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 30 "lex.l"
-{return yytext[0];}
+{printf("TOKEN: %s\n", yytext); return yytext[0];}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP

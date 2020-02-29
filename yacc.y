@@ -9,73 +9,82 @@ int yylex();
 
 %%
 
-Program: Statement {printf("Program -> Statement\n"); YYACCEPT;};
-Statement: IF '(' Condition ')' '{' Statement '}' ELSE '{' Statement '}' Statement {printf("Statement -> if else\n");} |
-	IF '(' Condition ')' '{' Statement '}' Statement {printf("Statement -> if\n");} |
-	FOR '(' Initialisation SEMICOLON Condition SEMICOLON Expression ')' '{' Statement '}' Statement {printf("Statement -> for\n");} |
-	FOR '(' InExpression ')' '{' Statement '}' Statement {printf("Statement -> for in\n");} |
-	FOR '(' OfExpression ')' '{' Statement '}' Statement {printf("Statement -> for of\n");} |
-	RETURN Expression SEMICOLON Statement {printf("Statement -> return\n");} |
-	Declaration SEMICOLON Statement {printf("Statement -> Declaration\n");} |
-	AssignmentExpression SEMICOLON Statement {printf("Statement -> Assignment\n");} | ;
+Program: Statement {YYACCEPT;};
+Statement: IF '(' Condition ')' '{' Statement '}' ELSE '{' Statement '}' Statement |
+	IF '(' Condition ')' '{' Statement '}' Statement |
+	FOR '(' Initialisation SEMICOLON Condition SEMICOLON Expression ')' '{' Statement '}' Statement |
+	FOR '(' InExpression ')' '{' Statement '}' |
+	FOR '(' OfExpression ')' '{' Statement '}' |
+	RETURN Expression SEMICOLON Statement |
+	Declaration SEMICOLON Statement |
+	AssignmentExpression SEMICOLON Statement |
+	UnaryStatement SEMICOLON Statement | ;
 
-Declaration: VAR Variables {printf("Declaration -> var variables\n");}; 
+Declaration: VAR Variables ; 
 
-Variables: Variables ',' Variable {printf("Variables -> Comma\n");} |
-	Variable {printf("Variables -> Variable\n");} ;
+Variables: Variables ',' Variable |
+	Variable ;
 
-Variable: IDENTIFIER {printf("Variable -> Identifier\n");} |
-	AssignmentExpression {printf("Variable -> AssignmentExp\n");} ;
+Variable: IDENTIFIER |
+	AssignmentExpression ;
 
-Condition: '!' OrExpression {printf("Condition -> !OrExp\n");} |
-	OrExpression {printf("Condition -> OrExp\n");} ;
+Condition: '!' OrExpression |
+	OrExpression ;
 
-OrExpression: OrExpression '|''|' AndExpression {printf("OrExp -> Or || And\n");} |
-	AndExpression {printf("OrExp -> AndExp\n");} ;
+OrExpression: OrExpression '|''|' AndExpression |
+	AndExpression ;
 
-AndExpression: AndExpression '&''&' ConditionalBase {printf("AndExp -> AndExp && ConditionalBase\n");} |
-	ConditionalBase {printf("AndExp -> ConditionalBase\n");} ;
+AndExpression: AndExpression '&''&' ConditionalBase |
+	ConditionalBase ;
 
-ConditionalBase: '(' Condition ')' {printf("ConditionalBase -> ( Condition) )\n");} |
-	RelationalExpression {printf("ConditionalBase -> RelationalExpression\n");} |
-	TRUE {printf("ConditionalBase -> TRUE\n");} |
-	FALSE {printf("ConditionalBase -> FALSE\n");} ;
+ConditionalBase: '(' Condition ')' |
+	RelationalExpression |
+	TRUE |
+	FALSE ;
 
-RelationalExpression: RelationalExpression RelationalOperator Expression {printf("RelExp -> RelExp RelOp Exp\n");} |
-	Expression {printf("RelationalExpression -> Expression\n");} ;
+RelationalExpression: RelationalExpression RelationalOperator Expression |
+	Expression ;
 
 RelationalOperator: '<' | '>' | '<''=' | '>''=' | '=''=' | '!''=' ;
 
-Expression: Expression '+' MultDiv {printf("Exp -> Exp + MultDiv\n");} |
-	Expression '-' MultDiv {printf("Exp -> Exp - MultDiv\n");} |
-	MultDiv {printf("Exp -> MultDiv\n");} ;
+Expression: Expression '+' MultDiv |
+	Expression '-' MultDiv |
+	MultDiv ;
 
-MultDiv: MultDiv '*' ExponentialExpression {printf("MultDiv -> Exponential\n");} |
-	MultDiv '/' ExponentialExpression {printf("MultDiv -> MultDiv / Exponential\n");} |
-	ExponentialExpression {printf("MultDiv -> Exponential\n");};
+MultDiv: MultDiv '*' ExponentialExpression |
+	MultDiv '/' ExponentialExpression |
+	ExponentialExpression ;
 
-ExponentialExpression: UnaryPostExpression '^' ExponentialExpression {printf("Exponential -> UnaryPost ^ Exponential\n");} |
-	UnaryPostExpression {printf("Exponential -> UnaryPost\n");} ;
+ExponentialExpression: UnaryPostExpression '^' ExponentialExpression |
+	UnaryPostExpression ;
 
-UnaryPostExpression: UnaryPreExpression UNARYPLUS {printf("UnaryPost -> UnaryPre ++\n");} |
-	UnaryPreExpression UNARYMINUS {printf("UnaryPost -> UnaryPre --\n");} |
-	UnaryPreExpression {printf("UnaryPost -> Unary\n");};
+UnaryPostExpression: UnaryPreExpression UNARYPLUS |
+	UnaryPreExpression UNARYMINUS |
+	UnaryPreExpression ;
 
-UnaryPreExpression: UNARYPLUS ExpressionBase {printf("UnaryPre -> ++ ExpBase\n");} |
-	UNARYMINUS ExpressionBase {printf("UnaryPre -> -- ExpBase\n");} |
-	ExpressionBase {printf("UnaryPre -> ExpBase\n");} ;
+UnaryPreExpression: UNARYPLUS ExpressionBase |
+	UNARYMINUS ExpressionBase |
+	ExpressionBase ;
 
-ExpressionBase:'(' Expression ')' {printf("ExpBase -> ( Expression )\n");} |
-	IDENTIFIER {printf("ExpBase -> IDENTIFIER\n");} |
-	NUM {printf("ExpBase -> NUM\n");};
+ExpressionBase:'(' Expression ')' |
+	IDENTIFIER |
+	NUM ;
 
-Initialisation: AssignmentExpression {printf("Initialisation -> AssignmentExpression\n");} | ;
+UnaryStatement: IDENTIFIER UNARYPLUS |
+	IDENTIFIER UNARYMINUS |
+	UNARYPLUS IDENTIFIER |
+	UNARYMINUS IDENTIFIER ;
 
-AssignmentExpression: IDENTIFIER '=' AssignmentRHS {printf("AssignmentExp -> IDENTIFIER '=' AssignmentRHS\n");};
+Initialisation: AssignmentExpression | ;
 
-AssignmentRHS: RelationalExpression {printf("AssignmentRHS -> RelExp\n");} | Array {printf("AssignmentExp -> Array\n");} ;
+AssignmentExpression: IDENTIFIER '=' AssignmentRHS ;
 
-InExpression: IDENTIFIER IN Iterable;
+AssignmentRHS: RelationalExpression |
+	Array |
+	STRING;
+
+InExpression: IDENTIFIER IN Iterable |
+	IDENTIFIER IN IDENTIFIER ;
 
 OfExpression: IDENTIFIER OF Iterable;
 
