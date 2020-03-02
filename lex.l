@@ -35,7 +35,6 @@ var                         {printf("VAR\n"); return VAR;}
 "/"\*[\n|.]*\*"/"           {;}
 "{"                         {printf("{\n"); scopeid=maxscope+1; scopedepth+=1; return yytext[0];}
 "}"                         {printf("}\n"); scopedepth-=1; if(scopedepth == 0){scopeid = 0;} maxscope+=1; return yytext[0];}
-\+                          {printf("+\n"); return yytext[0];}
 .                           {printf("%s\n", yytext); return yytext[0];}
 %%
 
