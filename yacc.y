@@ -3,6 +3,7 @@
 	#include <stdlib.h>
 	#include <string.h>
 	#include <stdio.h>
+	#include <math.h>
 	FILE *yyin;
 	int yyerror();
 	int yylex();
@@ -13,6 +14,7 @@
 	typedef struct NODE
 	{
 		char name[20];
+		int value;
 		int line;
 		int scopeid;
 		int scopedepth;
@@ -31,8 +33,10 @@
 
 	void print(TABLE* s);
 	void tableinit(TABLE *table);
+	int getvalue(TABLE *s, char* name, int pscopeid);
 	int exists(TABLE* s, char* name, int pscopeid);
-	void insert(TABLE* s, char* name, int line, int pscopeid, int pscopedepth) ;
+	void update(TABLE *s, char* name, int pscopeid, int val);
+	void insert(TABLE* s, char* name, int value, int line, int pscopeid, int pscopedepth) ;
 	extern int yylineno;
 %}
 
@@ -61,8 +65,8 @@ Declaration: VAR Variables ;
 Variables: Variables ',' Variable |
 	Variable ;
 
-Variable: IDENTIFIER {insert(s, $1, yylineno, scopeid, scopedepth);} |
-	IDENTIFIER '=' AssignmentRHS {insert(s, $1, yylineno, scopeid, scopedepth);} ; 
+Variable: IDENTIFIER {insert(s, $1, 0, yylineno, scopeid, scopedepth);} |
+	IDENTIFIER '=' AssignmentRHS {insert(s, $1, atoi($3), yylineno, scopeid, scopedepth);} ; 
 
 Condition: '!' OrExpression |
 	OrExpression ;
@@ -78,39 +82,36 @@ ConditionalBase: '(' Condition ')' |
 	TRUE |
 	FALSE ;
 
-RelationalExpression: RelationalExpression RelationalOperator Expression |
-	Expression ;
+RelationalExpression: RelationalExpression RelationalOperator Expression {sprintf($$, "%d", 0);} |
+	Expression {sprintf($$, "%s", $1);} ;
 
 RelationalOperator: '<' | '>' | '<''=' | '>''=' | '=''=' | '!''=' ;
 
-Expression: Expression '+' MultDiv |
-	Expression '-' MultDiv |
-	MultDiv ;
+Expression: Expression '+' MultDiv {sprintf($$, "%d", atoi($1)+atoi($3));} |
+	Expression '-' MultDiv {sprintf($$, "%d", atoi($1)-atoi($3));} |
+	MultDiv {sprintf($$, "%s", $1);} ;
 
-MultDiv: MultDiv '*' ExponentialExpression |
-	MultDiv '/' ExponentialExpression |
-	ExponentialExpression ;
+MultDiv: MultDiv '*' UnaryPostExpression {sprintf($$, "%d", atoi($1)*atoi($3));} |
+	MultDiv '/' UnaryPostExpression {if(atoi($3)!=0){sprintf($$, "%d", atoi($1)/atoi($3));} else{printf("Divide by zero [Line %d]\n", yylineno); yyerror();}} |
+	UnaryPostExpression {sprintf($$, "%s", $1);} ;
 
-ExponentialExpression: UnaryPostExpression '^' ExponentialExpression |
-	UnaryPostExpression ;
+UnaryPostExpression: UnaryPreExpression UNARYPLUS {sprintf($$, "%d", atoi($1)+1);} |
+	UnaryPreExpression UNARYMINUS {sprintf($$, "%d", atoi($1)-1);} |
+	UnaryPreExpression {sprintf($$, "%s", $1);};
 
-UnaryPostExpression: UnaryPreExpression UNARYPLUS |
-	UnaryPreExpression UNARYMINUS |
-	UnaryPreExpression ;
+UnaryPreExpression: UNARYPLUS ExpressionBase {sprintf($$, "%d", atoi($2)+1);} |
+	UNARYMINUS ExpressionBase {sprintf($$, "%d", atoi($2)-1);} |
+	ExpressionBase {sprintf($$, "%s", $1);} ;
 
-UnaryPreExpression: UNARYPLUS ExpressionBase |
-	UNARYMINUS ExpressionBase |
-	ExpressionBase ;
-
-ExpressionBase:'(' Expression ')' |
-	IDENTIFIER |
-	NUM ;
+ExpressionBase:'(' Expression ')' {sprintf($$, "%s", $2);} |
+	IDENTIFIER {sprintf($$,"%d", getvalue(s, $1, scopeid));} |
+	NUM {sprintf($$, "%s", $1);} ;
 
 Initialisation: AssignmentExpression | ;
 
-AssignmentExpression: IDENTIFIER '=' AssignmentRHS ;
+AssignmentExpression: IDENTIFIER '=' AssignmentRHS {if(exists(s, $1, scopeid)){update(s, $1, scopeid, atoi($3));} else{insert(s, $1, atoi($3), yylineno, scopeid, scopedepth);}} ;
 
-AssignmentRHS: RelationalExpression | Array ;
+AssignmentRHS: RelationalExpression {$$ = $1;} | Array | STRING ;
 
 InExpression: IDENTIFIER IN Iterable;
 
@@ -153,7 +154,7 @@ void tableinit(TABLE *table){
 	table->entries = 0;
 }
 
-void insert(TABLE* s, char* name, int line, int pscopeid, int pscopedepth)
+void insert(TABLE* s, char* name, int value, int line, int pscopeid, int pscopedepth)
 {
 	if(exists(s, name, pscopeid))
 	{
@@ -164,6 +165,7 @@ void insert(TABLE* s, char* name, int line, int pscopeid, int pscopedepth)
 	NODE* test = (NODE*) malloc(sizeof(NODE));
     strcpy(test->name,name);
 	test->next = NULL;
+	test->value = value;
 	test->scopeid = pscopeid;
 	test->scopedepth = pscopedepth;
 	test->line = line;
@@ -192,7 +194,7 @@ int exists(TABLE* s, char* name, int pscopeid)
 	}
 	while(temp != NULL)
 	{
-		if(strcmp(temp->name,name) == 0 && temp->scopeid == pscopeid){
+		if(strcmp(temp->name,name) == 0 && (temp->scopeid == pscopeid || temp->scopeid == 0)){
 			return 1;
 		}
 		temp = temp->next;
@@ -200,14 +202,44 @@ int exists(TABLE* s, char* name, int pscopeid)
 	return 0;
 }
 
+int getvalue(TABLE* s, char* name, int pscopeid)
+{
+	NODE* temp = s->head;
+	if(s->head == NULL || s->head == 0x0){
+		return 0;
+	}
+	while(temp != NULL)
+	{
+		if(strcmp(temp->name,name) == 0 && (temp->scopeid == pscopeid || temp->scopeid == 0)){
+			return temp->value;
+		}
+		temp = temp->next;
+	}
+	return 0;
+}
+
+void update(TABLE* s, char* name, int pscopeid, int val)
+{
+	NODE* temp = s->head;
+	if(s->head == NULL || s->head == 0x0){
+	}
+	while(temp != NULL)
+	{
+		if(strcmp(temp->name,name) == 0 && (temp->scopeid == pscopeid || temp->scopeid == 0)){
+			temp->value = val;
+		}
+		temp = temp->next;
+	}
+}
+
 void print(TABLE* s)
 {
 	NODE* h = s->head;
 	fp = fopen("symbol_table.txt","w");
-	fprintf(fp,"Symbol table:\nName\t\tLineno\t\tScope ID\tScope Depth\n");
+	fprintf(fp,"Symbol table:\nName\t\tLineno\t\tScope ID\tScope Depth\t\tValue\n");
 	for(int i=0;i<s->entries; i++ )
 	{
-		fprintf(fp,"%s\t\t\t%d\t\t\t%d\t\t\t%d\n", h->name, h->line, h->scopeid, h->scopedepth);
+		fprintf(fp,"%s\t\t\t%d\t\t\t%d\t\t\t%d\t\t\t\t%d\n", h->name, h->line, h->scopeid, h->scopedepth, h->value);
 		h=h->next;
 	}
 }

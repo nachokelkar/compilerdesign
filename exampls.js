@@ -1,21 +1,27 @@
 var a;
 a = 5;
 
-a++;
 
 if(true){
+    a = a-1;
     var b = 2;
 }
 
 for(i = 1; i<10; i++){
-    a=a-1;
+    for(j of [1,2,3,4]){
+        for(k in i){
+
+        }
+    }
     var c =3;
 }
 
-var a = 3;
 var f;
-a = 3;
+var c = 0;
+c=c-1;
 
-var c;
-c++;
---b;
+a = 9;
+var b = 9;
+c = a*b+(a-b);
+
+var x = "abcd";

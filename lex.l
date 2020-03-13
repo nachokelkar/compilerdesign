@@ -15,27 +15,27 @@
 
 %%
 "\n"                        {yylineno++;}
-for                         {printf("FOR\n"); return FOR;}
-true                        {printf("TRUE\n"); return TRUE;}
-false                       {printf("FALSE\n"); return FALSE;}
-if                          {printf("IF\n"); return IF;}
-else                        {printf("ELSE\n"); return ELSE;}
-return                      {printf("RETURN\n"); return RETURN;}
-in                          {printf("IN\n"); return IN;}
-of                          {printf("OF\n"); return OF;}
-var                         {printf("VAR\n"); return VAR;}
-[a-zA-Z_$][a-zA-Z_0-9$]*    {printf("IDENTIFIER: %s\n", yytext); p=(char *)calloc(strlen(yytext)+1,sizeof(char)); strcpy(p, yytext); yylval=p; addTokenToFile("Identifier", yytext); return IDENTIFIER;}
-[0-9]+                      {printf("NUMBER: %s\n", yytext); return NUM;}
-;                           {printf("SEMICOLON\n\n"); return SEMICOLON;}
-\".*\"                      {printf("STRING: %s\n", yytext); return STRING;}
-"++"                        {printf("UNARYPLUS\n"); return UNARYPLUS;}
-"--"                        {printf("UNARYMINUS\n"); return UNARYMINUS;}
+for                         {printf("(FOR)\n"); return FOR;}
+true                        {printf("(TRUE)\n"); return TRUE;}
+false                       {printf("(FALSE)\n"); return FALSE;}
+if                          {printf("(IF)\n"); return IF;}
+else                        {printf("(ELSE)\n"); return ELSE;}
+return                      {printf("(RETURN)\n"); return RETURN;}
+in                          {printf("(IN)\n"); return IN;}
+of                          {printf("(OF)\n"); return OF;}
+var                         {printf("(VAR)\n"); return VAR;}
+[a-zA-Z_$][a-zA-Z_0-9$]*    {printf("(IDENTIFIER: %s)\n", yytext); p=(char *)calloc(strlen(yytext)+1,sizeof(char)); strcpy(p, yytext); yylval=p; addTokenToFile("Identifier", yytext); return IDENTIFIER;}
+[0-9]+                      {printf("(NUMBER: %s)\n", yytext); yylval = yytext; return NUM;}
+;                           {printf("(SEMICOLON)\n\n"); return SEMICOLON;}
+\".*\"                      {printf("(STRING: %s)\n", yytext); return STRING;}
+"++"                        {printf("(UNARYPLUS)\n"); return UNARYPLUS;}
+"--"                        {printf("(UNARYMINUS)\n"); return UNARYMINUS;}
 [\t|' ']                    {;}
 "//".*                      {;}
 "/"\*[\n|.]*\*"/"           {;}
-"{"                         {printf("{\n"); scopeid=maxscope+1; scopedepth+=1; return yytext[0];}
-"}"                         {printf("}\n"); scopedepth-=1; if(scopedepth == 0){scopeid = 0;} maxscope+=1; return yytext[0];}
-.                           {printf("%s\n", yytext); return yytext[0];}
+"{"                         {printf("({)\n"); scopeid=maxscope+1; scopedepth+=1; return yytext[0];}
+"}"                         {printf("(})\n"); scopedepth-=1; if(scopedepth == 0){scopeid = 0;} maxscope+=1; return yytext[0];}
+.                           {printf("(%s)\n", yytext); return yytext[0];}
 %%
 
 void addTokenToFile(char *t, char *s)
