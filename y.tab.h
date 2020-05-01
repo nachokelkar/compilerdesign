@@ -53,13 +53,13 @@ extern int yydebug;
     FALSE = 263,
     IF = 264,
     FOR = 265,
-    IN = 266,
-    OF = 267,
-    ELSE = 268,
-    STRING = 269,
-    IDENTIFIER = 270,
-    UNARYPLUS = 271,
-    UNARYMINUS = 272
+    ELSE = 266,
+    STRING = 267,
+    IDENTIFIER = 268,
+    UNARYPLUS = 269,
+    UNARYMINUS = 270,
+    OROR = 271,
+    ANDAND = 272
   };
 #endif
 /* Tokens.  */
@@ -71,13 +71,13 @@ extern int yydebug;
 #define FALSE 263
 #define IF 264
 #define FOR 265
-#define IN 266
-#define OF 267
-#define ELSE 268
-#define STRING 269
-#define IDENTIFIER 270
-#define UNARYPLUS 271
-#define UNARYMINUS 272
+#define ELSE 266
+#define STRING 267
+#define IDENTIFIER 268
+#define UNARYPLUS 269
+#define UNARYMINUS 270
+#define OROR 271
+#define ANDAND 272
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
