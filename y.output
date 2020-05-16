@@ -1,0 +1,1509 @@
+State 86 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: Statement
+
+    2 $@1: %empty
+
+    3 $@2: %empty
+
+    4 $@3: %empty
+
+    5 $@4: %empty
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    7 $@5: %empty
+
+    8 $@6: %empty
+
+    9 $@7: %empty
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 Statement
+   11          | RETURN Expression SEMICOLON Statement
+   12          | Declaration SEMICOLON Statement
+   13          | AssignmentExpression SEMICOLON Statement
+   14          | UnaryExpression SEMICOLON Statement
+   15          | %empty
+
+   16 ForExpression: UnaryExpression
+   17              | AssignmentExpression
+
+   18 UnaryExpression: IDENTIFIER UNARYMINUS
+   19                | IDENTIFIER UNARYPLUS
+   20                | UNARYMINUS IDENTIFIER
+   21                | UNARYPLUS IDENTIFIER
+
+   22 Declaration: VAR Variables
+
+   23 Variables: Variables ',' Variable
+   24          | Variable
+
+   25 Variable: IDENTIFIER
+   26         | IDENTIFIER '=' AssignmentRHS
+
+   27 Condition: '!' OrExpression
+   28          | OrExpression
+
+   29 OrExpression: OrExpression OROR AndExpression
+   30             | AndExpression
+
+   31 AndExpression: AndExpression ANDAND ConditionalBase
+   32              | ConditionalBase
+
+   33 ConditionalBase: '(' Condition ')'
+   34                | RelationalExpression
+   35                | TRUE
+   36                | FALSE
+
+   37 RelationalExpression: RelationalExpression RelationalOperator Expression
+   38                     | Expression
+
+   39 RelationalOperator: '<'
+   40                   | '>'
+   41                   | '<' '='
+   42                   | '>' '='
+   43                   | '=' '='
+   44                   | '!' '='
+
+   45 Expression: Expression '+' MultDiv
+   46           | Expression '-' MultDiv
+   47           | MultDiv
+
+   48 MultDiv: MultDiv '*' UnaryPostExpression
+   49        | MultDiv '/' UnaryPostExpression
+   50        | UnaryPostExpression
+
+   51 UnaryPostExpression: UnaryPreExpression UNARYPLUS
+   52                    | UnaryPreExpression UNARYMINUS
+   53                    | UnaryPreExpression
+
+   54 UnaryPreExpression: UNARYPLUS ExpressionBase
+   55                   | UNARYMINUS ExpressionBase
+   56                   | ExpressionBase
+
+   57 ExpressionBase: '(' Expression ')'
+   58               | IDENTIFIER
+   59               | NUM
+
+   60 Initialisation: AssignmentExpression
+   61               | VAR AssignmentExpression
+   62               | %empty
+
+   63 AssignmentExpression: IDENTIFIER '=' AssignmentRHS
+
+   64 AssignmentRHS: RelationalExpression
+   65              | STRING
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'!' (33) 27 44
+'(' (40) 6 10 33 57
+')' (41) 6 10 33 57
+'*' (42) 48
+'+' (43) 45
+',' (44) 23
+'-' (45) 46
+'/' (47) 49
+'<' (60) 39 41
+'=' (61) 26 41 42 43 44 63
+'>' (62) 40 42
+'{' (123) 6 10
+'}' (125) 6 10
+error (256)
+RETURN (258) 11
+SEMICOLON (259) 10 11 12 13 14
+NUM (260) 59
+VAR (261) 22 61
+TRUE (262) 35
+FALSE (263) 36
+IF (264) 6
+FOR (265) 10
+ELSE (266) 6
+STRING (267) 65
+IDENTIFIER (268) 18 19 20 21 25 26 58 63
+UNARYPLUS (269) 19 21 51 54
+UNARYMINUS (270) 18 20 52 55
+OROR (271) 29
+ANDAND (272) 31
+
+
+Nonterminals, with rules where they appear
+
+$accept (31)
+    on left: 0
+Program (32)
+    on left: 1, on right: 0
+Statement (33)
+    on left: 6 10 11 12 13 14 15, on right: 1 6 10 11 12 13 14
+$@1 (34)
+    on left: 2, on right: 6
+$@2 (35)
+    on left: 3, on right: 6
+$@3 (36)
+    on left: 4, on right: 6
+$@4 (37)
+    on left: 5, on right: 6
+$@5 (38)
+    on left: 7, on right: 10
+$@6 (39)
+    on left: 8, on right: 10
+$@7 (40)
+    on left: 9, on right: 10
+ForExpression (41)
+    on left: 16 17, on right: 10
+UnaryExpression (42)
+    on left: 18 19 20 21, on right: 14 16
+Declaration (43)
+    on left: 22, on right: 12
+Variables (44)
+    on left: 23 24, on right: 22 23
+Variable (45)
+    on left: 25 26, on right: 23 24
+Condition (46)
+    on left: 27 28, on right: 6 10 33
+OrExpression (47)
+    on left: 29 30, on right: 27 28 29
+AndExpression (48)
+    on left: 31 32, on right: 29 30 31
+ConditionalBase (49)
+    on left: 33 34 35 36, on right: 31 32
+RelationalExpression (50)
+    on left: 37 38, on right: 34 37 64
+RelationalOperator (51)
+    on left: 39 40 41 42 43 44, on right: 37
+Expression (52)
+    on left: 45 46 47, on right: 11 37 38 45 46 57
+MultDiv (53)
+    on left: 48 49 50, on right: 45 46 47 48 49
+UnaryPostExpression (54)
+    on left: 51 52 53, on right: 48 49 50
+UnaryPreExpression (55)
+    on left: 54 55 56, on right: 51 52 53
+ExpressionBase (56)
+    on left: 57 58 59, on right: 54 55 56
+Initialisation (57)
+    on left: 60 61 62, on right: 10
+AssignmentExpression (58)
+    on left: 63, on right: 13 17 60 61
+AssignmentRHS (59)
+    on left: 64 65, on right: 26 63
+
+
+State 0
+
+    0 $accept: . Program $end
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Program               go to state 8
+    Statement             go to state 9
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 1
+
+   11 Statement: RETURN . Expression SEMICOLON Statement
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    Expression           go to state 18
+    MultDiv              go to state 19
+    UnaryPostExpression  go to state 20
+    UnaryPreExpression   go to state 21
+    ExpressionBase       go to state 22
+
+
+State 2
+
+   22 Declaration: VAR . Variables
+
+    IDENTIFIER  shift, and go to state 23
+
+    Variables  go to state 24
+    Variable   go to state 25
+
+
+State 3
+
+    6 Statement: IF . '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    '('  shift, and go to state 26
+
+
+State 4
+
+   10 Statement: FOR . '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 Statement
+
+    '('  shift, and go to state 27
+
+
+State 5
+
+   18 UnaryExpression: IDENTIFIER . UNARYMINUS
+   19                | IDENTIFIER . UNARYPLUS
+   63 AssignmentExpression: IDENTIFIER . '=' AssignmentRHS
+
+    UNARYPLUS   shift, and go to state 28
+    UNARYMINUS  shift, and go to state 29
+    '='         shift, and go to state 30
+
+
+State 6
+
+   21 UnaryExpression: UNARYPLUS . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 31
+
+
+State 7
+
+   20 UnaryExpression: UNARYMINUS . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 32
+
+
+State 8
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 33
+
+
+State 9
+
+    1 Program: Statement .
+
+    $default  reduce using rule 1 (Program)
+
+
+State 10
+
+   14 Statement: UnaryExpression . SEMICOLON Statement
+
+    SEMICOLON  shift, and go to state 34
+
+
+State 11
+
+   12 Statement: Declaration . SEMICOLON Statement
+
+    SEMICOLON  shift, and go to state 35
+
+
+State 12
+
+   13 Statement: AssignmentExpression . SEMICOLON Statement
+
+    SEMICOLON  shift, and go to state 36
+
+
+State 13
+
+   59 ExpressionBase: NUM .
+
+    $default  reduce using rule 59 (ExpressionBase)
+
+
+State 14
+
+   58 ExpressionBase: IDENTIFIER .
+
+    $default  reduce using rule 58 (ExpressionBase)
+
+
+State 15
+
+   54 UnaryPreExpression: UNARYPLUS . ExpressionBase
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    '('         shift, and go to state 17
+
+    ExpressionBase  go to state 37
+
+
+State 16
+
+   55 UnaryPreExpression: UNARYMINUS . ExpressionBase
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    '('         shift, and go to state 17
+
+    ExpressionBase  go to state 38
+
+
+State 17
+
+   57 ExpressionBase: '(' . Expression ')'
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    Expression           go to state 39
+    MultDiv              go to state 19
+    UnaryPostExpression  go to state 20
+    UnaryPreExpression   go to state 21
+    ExpressionBase       go to state 22
+
+
+State 18
+
+   11 Statement: RETURN Expression . SEMICOLON Statement
+   45 Expression: Expression . '+' MultDiv
+   46           | Expression . '-' MultDiv
+
+    SEMICOLON  shift, and go to state 40
+    '+'        shift, and go to state 41
+    '-'        shift, and go to state 42
+
+
+State 19
+
+   47 Expression: MultDiv .
+   48 MultDiv: MultDiv . '*' UnaryPostExpression
+   49        | MultDiv . '/' UnaryPostExpression
+
+    '*'  shift, and go to state 43
+    '/'  shift, and go to state 44
+
+    $default  reduce using rule 47 (Expression)
+
+
+State 20
+
+   50 MultDiv: UnaryPostExpression .
+
+    $default  reduce using rule 50 (MultDiv)
+
+
+State 21
+
+   51 UnaryPostExpression: UnaryPreExpression . UNARYPLUS
+   52                    | UnaryPreExpression . UNARYMINUS
+   53                    | UnaryPreExpression .
+
+    UNARYPLUS   shift, and go to state 45
+    UNARYMINUS  shift, and go to state 46
+
+    $default  reduce using rule 53 (UnaryPostExpression)
+
+
+State 22
+
+   56 UnaryPreExpression: ExpressionBase .
+
+    $default  reduce using rule 56 (UnaryPreExpression)
+
+
+State 23
+
+   25 Variable: IDENTIFIER .
+   26         | IDENTIFIER . '=' AssignmentRHS
+
+    '='  shift, and go to state 47
+
+    $default  reduce using rule 25 (Variable)
+
+
+State 24
+
+   22 Declaration: VAR Variables .
+   23 Variables: Variables . ',' Variable
+
+    ','  shift, and go to state 48
+
+    $default  reduce using rule 22 (Declaration)
+
+
+State 25
+
+   24 Variables: Variable .
+
+    $default  reduce using rule 24 (Variables)
+
+
+State 26
+
+    6 Statement: IF '(' . $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    $default  reduce using rule 2 ($@1)
+
+    $@1  go to state 49
+
+
+State 27
+
+   10 Statement: FOR '(' . Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 Statement
+
+    VAR         shift, and go to state 50
+    IDENTIFIER  shift, and go to state 51
+
+    $default  reduce using rule 62 (Initialisation)
+
+    Initialisation        go to state 52
+    AssignmentExpression  go to state 53
+
+
+State 28
+
+   19 UnaryExpression: IDENTIFIER UNARYPLUS .
+
+    $default  reduce using rule 19 (UnaryExpression)
+
+
+State 29
+
+   18 UnaryExpression: IDENTIFIER UNARYMINUS .
+
+    $default  reduce using rule 18 (UnaryExpression)
+
+
+State 30
+
+   63 AssignmentExpression: IDENTIFIER '=' . AssignmentRHS
+
+    NUM         shift, and go to state 13
+    STRING      shift, and go to state 54
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    RelationalExpression  go to state 55
+    Expression            go to state 56
+    MultDiv               go to state 19
+    UnaryPostExpression   go to state 20
+    UnaryPreExpression    go to state 21
+    ExpressionBase        go to state 22
+    AssignmentRHS         go to state 57
+
+
+State 31
+
+   21 UnaryExpression: UNARYPLUS IDENTIFIER .
+
+    $default  reduce using rule 21 (UnaryExpression)
+
+
+State 32
+
+   20 UnaryExpression: UNARYMINUS IDENTIFIER .
+
+    $default  reduce using rule 20 (UnaryExpression)
+
+
+State 33
+
+    0 $accept: Program $end .
+
+    $default  accept
+
+
+State 34
+
+   14 Statement: UnaryExpression SEMICOLON . Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 58
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 35
+
+   12 Statement: Declaration SEMICOLON . Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 59
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 36
+
+   13 Statement: AssignmentExpression SEMICOLON . Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 60
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 37
+
+   54 UnaryPreExpression: UNARYPLUS ExpressionBase .
+
+    $default  reduce using rule 54 (UnaryPreExpression)
+
+
+State 38
+
+   55 UnaryPreExpression: UNARYMINUS ExpressionBase .
+
+    $default  reduce using rule 55 (UnaryPreExpression)
+
+
+State 39
+
+   45 Expression: Expression . '+' MultDiv
+   46           | Expression . '-' MultDiv
+   57 ExpressionBase: '(' Expression . ')'
+
+    ')'  shift, and go to state 61
+    '+'  shift, and go to state 41
+    '-'  shift, and go to state 42
+
+
+State 40
+
+   11 Statement: RETURN Expression SEMICOLON . Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 62
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 41
+
+   45 Expression: Expression '+' . MultDiv
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    MultDiv              go to state 63
+    UnaryPostExpression  go to state 20
+    UnaryPreExpression   go to state 21
+    ExpressionBase       go to state 22
+
+
+State 42
+
+   46 Expression: Expression '-' . MultDiv
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    MultDiv              go to state 64
+    UnaryPostExpression  go to state 20
+    UnaryPreExpression   go to state 21
+    ExpressionBase       go to state 22
+
+
+State 43
+
+   48 MultDiv: MultDiv '*' . UnaryPostExpression
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    UnaryPostExpression  go to state 65
+    UnaryPreExpression   go to state 21
+    ExpressionBase       go to state 22
+
+
+State 44
+
+   49 MultDiv: MultDiv '/' . UnaryPostExpression
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    UnaryPostExpression  go to state 66
+    UnaryPreExpression   go to state 21
+    ExpressionBase       go to state 22
+
+
+State 45
+
+   51 UnaryPostExpression: UnaryPreExpression UNARYPLUS .
+
+    $default  reduce using rule 51 (UnaryPostExpression)
+
+
+State 46
+
+   52 UnaryPostExpression: UnaryPreExpression UNARYMINUS .
+
+    $default  reduce using rule 52 (UnaryPostExpression)
+
+
+State 47
+
+   26 Variable: IDENTIFIER '=' . AssignmentRHS
+
+    NUM         shift, and go to state 13
+    STRING      shift, and go to state 54
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    RelationalExpression  go to state 55
+    Expression            go to state 56
+    MultDiv               go to state 19
+    UnaryPostExpression   go to state 20
+    UnaryPreExpression    go to state 21
+    ExpressionBase        go to state 22
+    AssignmentRHS         go to state 67
+
+
+State 48
+
+   23 Variables: Variables ',' . Variable
+
+    IDENTIFIER  shift, and go to state 23
+
+    Variable  go to state 68
+
+
+State 49
+
+    6 Statement: IF '(' $@1 . Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    NUM         shift, and go to state 13
+    TRUE        shift, and go to state 69
+    FALSE       shift, and go to state 70
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 71
+    '!'         shift, and go to state 72
+
+    Condition             go to state 73
+    OrExpression          go to state 74
+    AndExpression         go to state 75
+    ConditionalBase       go to state 76
+    RelationalExpression  go to state 77
+    Expression            go to state 56
+    MultDiv               go to state 19
+    UnaryPostExpression   go to state 20
+    UnaryPreExpression    go to state 21
+    ExpressionBase        go to state 22
+
+
+State 50
+
+   61 Initialisation: VAR . AssignmentExpression
+
+    IDENTIFIER  shift, and go to state 51
+
+    AssignmentExpression  go to state 78
+
+
+State 51
+
+   63 AssignmentExpression: IDENTIFIER . '=' AssignmentRHS
+
+    '='  shift, and go to state 30
+
+
+State 52
+
+   10 Statement: FOR '(' Initialisation . SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 Statement
+
+    SEMICOLON  shift, and go to state 79
+
+
+State 53
+
+   60 Initialisation: AssignmentExpression .
+
+    $default  reduce using rule 60 (Initialisation)
+
+
+State 54
+
+   65 AssignmentRHS: STRING .
+
+    $default  reduce using rule 65 (AssignmentRHS)
+
+
+State 55
+
+   37 RelationalExpression: RelationalExpression . RelationalOperator Expression
+   64 AssignmentRHS: RelationalExpression .
+
+    '='  shift, and go to state 80
+    '!'  shift, and go to state 81
+    '<'  shift, and go to state 82
+    '>'  shift, and go to state 83
+
+    $default  reduce using rule 64 (AssignmentRHS)
+
+    RelationalOperator  go to state 84
+
+
+State 56
+
+   38 RelationalExpression: Expression .
+   45 Expression: Expression . '+' MultDiv
+   46           | Expression . '-' MultDiv
+
+    '+'  shift, and go to state 41
+    '-'  shift, and go to state 42
+
+    $default  reduce using rule 38 (RelationalExpression)
+
+
+State 57
+
+   63 AssignmentExpression: IDENTIFIER '=' AssignmentRHS .
+
+    $default  reduce using rule 63 (AssignmentExpression)
+
+
+State 58
+
+   14 Statement: UnaryExpression SEMICOLON Statement .
+
+    $default  reduce using rule 14 (Statement)
+
+
+State 59
+
+   12 Statement: Declaration SEMICOLON Statement .
+
+    $default  reduce using rule 12 (Statement)
+
+
+State 60
+
+   13 Statement: AssignmentExpression SEMICOLON Statement .
+
+    $default  reduce using rule 13 (Statement)
+
+
+State 61
+
+   57 ExpressionBase: '(' Expression ')' .
+
+    $default  reduce using rule 57 (ExpressionBase)
+
+
+State 62
+
+   11 Statement: RETURN Expression SEMICOLON Statement .
+
+    $default  reduce using rule 11 (Statement)
+
+
+State 63
+
+   45 Expression: Expression '+' MultDiv .
+   48 MultDiv: MultDiv . '*' UnaryPostExpression
+   49        | MultDiv . '/' UnaryPostExpression
+
+    '*'  shift, and go to state 43
+    '/'  shift, and go to state 44
+
+    $default  reduce using rule 45 (Expression)
+
+
+State 64
+
+   46 Expression: Expression '-' MultDiv .
+   48 MultDiv: MultDiv . '*' UnaryPostExpression
+   49        | MultDiv . '/' UnaryPostExpression
+
+    '*'  shift, and go to state 43
+    '/'  shift, and go to state 44
+
+    $default  reduce using rule 46 (Expression)
+
+
+State 65
+
+   48 MultDiv: MultDiv '*' UnaryPostExpression .
+
+    $default  reduce using rule 48 (MultDiv)
+
+
+State 66
+
+   49 MultDiv: MultDiv '/' UnaryPostExpression .
+
+    $default  reduce using rule 49 (MultDiv)
+
+
+State 67
+
+   26 Variable: IDENTIFIER '=' AssignmentRHS .
+
+    $default  reduce using rule 26 (Variable)
+
+
+State 68
+
+   23 Variables: Variables ',' Variable .
+
+    $default  reduce using rule 23 (Variables)
+
+
+State 69
+
+   35 ConditionalBase: TRUE .
+
+    $default  reduce using rule 35 (ConditionalBase)
+
+
+State 70
+
+   36 ConditionalBase: FALSE .
+
+    $default  reduce using rule 36 (ConditionalBase)
+
+
+State 71
+
+   33 ConditionalBase: '(' . Condition ')'
+   57 ExpressionBase: '(' . Expression ')'
+
+    NUM         shift, and go to state 13
+    TRUE        shift, and go to state 69
+    FALSE       shift, and go to state 70
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 71
+    '!'         shift, and go to state 72
+
+    Condition             go to state 85
+    OrExpression          go to state 74
+    AndExpression         go to state 75
+    ConditionalBase       go to state 76
+    RelationalExpression  go to state 77
+    Expression            go to state 86
+    MultDiv               go to state 19
+    UnaryPostExpression   go to state 20
+    UnaryPreExpression    go to state 21
+    ExpressionBase        go to state 22
+
+
+State 72
+
+   27 Condition: '!' . OrExpression
+
+    NUM         shift, and go to state 13
+    TRUE        shift, and go to state 69
+    FALSE       shift, and go to state 70
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 71
+
+    OrExpression          go to state 87
+    AndExpression         go to state 75
+    ConditionalBase       go to state 76
+    RelationalExpression  go to state 77
+    Expression            go to state 56
+    MultDiv               go to state 19
+    UnaryPostExpression   go to state 20
+    UnaryPreExpression    go to state 21
+    ExpressionBase        go to state 22
+
+
+State 73
+
+    6 Statement: IF '(' $@1 Condition . $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    $default  reduce using rule 3 ($@2)
+
+    $@2  go to state 88
+
+
+State 74
+
+   28 Condition: OrExpression .
+   29 OrExpression: OrExpression . OROR AndExpression
+
+    OROR  shift, and go to state 89
+
+    $default  reduce using rule 28 (Condition)
+
+
+State 75
+
+   30 OrExpression: AndExpression .
+   31 AndExpression: AndExpression . ANDAND ConditionalBase
+
+    ANDAND  shift, and go to state 90
+
+    $default  reduce using rule 30 (OrExpression)
+
+
+State 76
+
+   32 AndExpression: ConditionalBase .
+
+    $default  reduce using rule 32 (AndExpression)
+
+
+State 77
+
+   34 ConditionalBase: RelationalExpression .
+   37 RelationalExpression: RelationalExpression . RelationalOperator Expression
+
+    '='  shift, and go to state 80
+    '!'  shift, and go to state 81
+    '<'  shift, and go to state 82
+    '>'  shift, and go to state 83
+
+    $default  reduce using rule 34 (ConditionalBase)
+
+    RelationalOperator  go to state 84
+
+
+State 78
+
+   61 Initialisation: VAR AssignmentExpression .
+
+    $default  reduce using rule 61 (Initialisation)
+
+
+State 79
+
+   10 Statement: FOR '(' Initialisation SEMICOLON . $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 Statement
+
+    $default  reduce using rule 7 ($@5)
+
+    $@5  go to state 91
+
+
+State 80
+
+   43 RelationalOperator: '=' . '='
+
+    '='  shift, and go to state 92
+
+
+State 81
+
+   44 RelationalOperator: '!' . '='
+
+    '='  shift, and go to state 93
+
+
+State 82
+
+   39 RelationalOperator: '<' .
+   41                   | '<' . '='
+
+    '='  shift, and go to state 94
+
+    $default  reduce using rule 39 (RelationalOperator)
+
+
+State 83
+
+   40 RelationalOperator: '>' .
+   42                   | '>' . '='
+
+    '='  shift, and go to state 95
+
+    $default  reduce using rule 40 (RelationalOperator)
+
+
+State 84
+
+   37 RelationalExpression: RelationalExpression RelationalOperator . Expression
+
+    NUM         shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 17
+
+    Expression           go to state 96
+    MultDiv              go to state 19
+    UnaryPostExpression  go to state 20
+    UnaryPreExpression   go to state 21
+    ExpressionBase       go to state 22
+
+
+State 85
+
+   33 ConditionalBase: '(' Condition . ')'
+
+    ')'  shift, and go to state 97
+
+
+State 86
+
+   38 RelationalExpression: Expression .
+   45 Expression: Expression . '+' MultDiv
+   46           | Expression . '-' MultDiv
+   57 ExpressionBase: '(' Expression . ')'
+
+    ')'  shift, and go to state 61
+    '+'  shift, and go to state 41
+    '-'  shift, and go to state 42
+
+    ')'       [reduce using rule 38 (RelationalExpression)]
+    $default  reduce using rule 38 (RelationalExpression)
+
+
+State 87
+
+   27 Condition: '!' OrExpression .
+   29 OrExpression: OrExpression . OROR AndExpression
+
+    OROR  shift, and go to state 89
+
+    $default  reduce using rule 27 (Condition)
+
+
+State 88
+
+    6 Statement: IF '(' $@1 Condition $@2 . ')' '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    ')'  shift, and go to state 98
+
+
+State 89
+
+   29 OrExpression: OrExpression OROR . AndExpression
+
+    NUM         shift, and go to state 13
+    TRUE        shift, and go to state 69
+    FALSE       shift, and go to state 70
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 71
+
+    AndExpression         go to state 99
+    ConditionalBase       go to state 76
+    RelationalExpression  go to state 77
+    Expression            go to state 56
+    MultDiv               go to state 19
+    UnaryPostExpression   go to state 20
+    UnaryPreExpression    go to state 21
+    ExpressionBase        go to state 22
+
+
+State 90
+
+   31 AndExpression: AndExpression ANDAND . ConditionalBase
+
+    NUM         shift, and go to state 13
+    TRUE        shift, and go to state 69
+    FALSE       shift, and go to state 70
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 71
+
+    ConditionalBase       go to state 100
+    RelationalExpression  go to state 77
+    Expression            go to state 56
+    MultDiv               go to state 19
+    UnaryPostExpression   go to state 20
+    UnaryPreExpression    go to state 21
+    ExpressionBase        go to state 22
+
+
+State 91
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 . Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 Statement
+
+    NUM         shift, and go to state 13
+    TRUE        shift, and go to state 69
+    FALSE       shift, and go to state 70
+    IDENTIFIER  shift, and go to state 14
+    UNARYPLUS   shift, and go to state 15
+    UNARYMINUS  shift, and go to state 16
+    '('         shift, and go to state 71
+    '!'         shift, and go to state 72
+
+    Condition             go to state 101
+    OrExpression          go to state 74
+    AndExpression         go to state 75
+    ConditionalBase       go to state 76
+    RelationalExpression  go to state 77
+    Expression            go to state 56
+    MultDiv               go to state 19
+    UnaryPostExpression   go to state 20
+    UnaryPreExpression    go to state 21
+    ExpressionBase        go to state 22
+
+
+State 92
+
+   43 RelationalOperator: '=' '=' .
+
+    $default  reduce using rule 43 (RelationalOperator)
+
+
+State 93
+
+   44 RelationalOperator: '!' '=' .
+
+    $default  reduce using rule 44 (RelationalOperator)
+
+
+State 94
+
+   41 RelationalOperator: '<' '=' .
+
+    $default  reduce using rule 41 (RelationalOperator)
+
+
+State 95
+
+   42 RelationalOperator: '>' '=' .
+
+    $default  reduce using rule 42 (RelationalOperator)
+
+
+State 96
+
+   37 RelationalExpression: RelationalExpression RelationalOperator Expression .
+   45 Expression: Expression . '+' MultDiv
+   46           | Expression . '-' MultDiv
+
+    '+'  shift, and go to state 41
+    '-'  shift, and go to state 42
+
+    $default  reduce using rule 37 (RelationalExpression)
+
+
+State 97
+
+   33 ConditionalBase: '(' Condition ')' .
+
+    $default  reduce using rule 33 (ConditionalBase)
+
+
+State 98
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' . '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    '{'  shift, and go to state 102
+
+
+State 99
+
+   29 OrExpression: OrExpression OROR AndExpression .
+   31 AndExpression: AndExpression . ANDAND ConditionalBase
+
+    ANDAND  shift, and go to state 90
+
+    $default  reduce using rule 29 (OrExpression)
+
+
+State 100
+
+   31 AndExpression: AndExpression ANDAND ConditionalBase .
+
+    $default  reduce using rule 31 (AndExpression)
+
+
+State 101
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition . SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 Statement
+
+    SEMICOLON  shift, and go to state 103
+
+
+State 102
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' . Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 104
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 103
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON . $@6 ForExpression ')' '{' Statement '}' $@7 Statement
+
+    $default  reduce using rule 8 ($@6)
+
+    $@6  go to state 105
+
+
+State 104
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement . '}' $@3 ELSE '{' Statement '}' $@4 Statement
+
+    '}'  shift, and go to state 106
+
+
+State 105
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 . ForExpression ')' '{' Statement '}' $@7 Statement
+
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    ForExpression         go to state 107
+    UnaryExpression       go to state 108
+    AssignmentExpression  go to state 109
+
+
+State 106
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' . $@3 ELSE '{' Statement '}' $@4 Statement
+
+    $default  reduce using rule 4 ($@3)
+
+    $@3  go to state 110
+
+
+State 107
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression . ')' '{' Statement '}' $@7 Statement
+
+    ')'  shift, and go to state 111
+
+
+State 108
+
+   16 ForExpression: UnaryExpression .
+
+    $default  reduce using rule 16 (ForExpression)
+
+
+State 109
+
+   17 ForExpression: AssignmentExpression .
+
+    $default  reduce using rule 17 (ForExpression)
+
+
+State 110
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 . ELSE '{' Statement '}' $@4 Statement
+
+    ELSE  shift, and go to state 112
+
+
+State 111
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' . '{' Statement '}' $@7 Statement
+
+    '{'  shift, and go to state 113
+
+
+State 112
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE . '{' Statement '}' $@4 Statement
+
+    '{'  shift, and go to state 114
+
+
+State 113
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' . Statement '}' $@7 Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 115
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 114
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' . Statement '}' $@4 Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 116
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 115
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement . '}' $@7 Statement
+
+    '}'  shift, and go to state 117
+
+
+State 116
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement . '}' $@4 Statement
+
+    '}'  shift, and go to state 118
+
+
+State 117
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' . $@7 Statement
+
+    $default  reduce using rule 9 ($@7)
+
+    $@7  go to state 119
+
+
+State 118
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement '}' . $@4 Statement
+
+    $default  reduce using rule 5 ($@4)
+
+    $@4  go to state 120
+
+
+State 119
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 . Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 121
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 120
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 . Statement
+
+    RETURN      shift, and go to state 1
+    VAR         shift, and go to state 2
+    IF          shift, and go to state 3
+    FOR         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
+    UNARYPLUS   shift, and go to state 6
+    UNARYMINUS  shift, and go to state 7
+
+    $default  reduce using rule 15 (Statement)
+
+    Statement             go to state 122
+    UnaryExpression       go to state 10
+    Declaration           go to state 11
+    AssignmentExpression  go to state 12
+
+
+State 121
+
+   10 Statement: FOR '(' Initialisation SEMICOLON $@5 Condition SEMICOLON $@6 ForExpression ')' '{' Statement '}' $@7 Statement .
+
+    $default  reduce using rule 10 (Statement)
+
+
+State 122
+
+    6 Statement: IF '(' $@1 Condition $@2 ')' '{' Statement '}' $@3 ELSE '{' Statement '}' $@4 Statement .
+
+    $default  reduce using rule 6 (Statement)
